@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import { Socket } from "socket.io-client";
 import styled from "styled-components";
@@ -15,6 +15,7 @@ const Key = styled.button`
   border-radius: 5px;
   color: black;
   justify-content: flex-end;
+  align-items: center;
 `;
 
 interface Props {
@@ -22,41 +23,49 @@ interface Props {
   color?: "black" | "white";
   piano: Tone.PolySynth<Tone.Synth<Tone.SynthOptions>>;
   socket: Socket;
+  isPlaying: boolean;
 }
 
-export const PianoKey: React.FC<Props> = ({ note, piano, socket }) => {
+export const PianoKey: React.FC<Props> = ({
+  note,
+  piano,
+  socket,
+  isPlaying,
+}) => {
   const [isWhite, setIsWhite] = useState(true);
-  const handlePlayKey = () => {
+
+  const handlePlayKey = useCallback(() => {
     setIsWhite(false);
     const time = Tone.now();
+    if (isPlaying) {
+      socket.emit("keyPressed", note);
+    }
     piano.triggerAttackRelease(note, "16n", time);
     setTimeout(() => {
       setIsWhite(true);
     }, 300);
-  };
-
-  const elementRef = useRef<HTMLButtonElement>(null);
+  }, [isPlaying, note, piano, socket]);
 
   useEffect(() => {
+    if (isPlaying) return;
+
     socket.on("opponentKeyPressed", (msg) => {
       if (msg == note) {
         setIsWhite(false);
-        if (elementRef.current) {
-          elementRef.current.click();
-        }
+        handlePlayKey();
       }
     });
 
     return () => {
       socket.off("opponentKeyPressed");
     };
-  }, [note, socket]);
+  }, [handlePlayKey, isPlaying, note, socket]);
 
   return (
     <>
       <Key
         onClick={handlePlayKey}
-        ref={elementRef}
+        disabled={!isPlaying}
         style={{ backgroundColor: isWhite ? "white" : "red" }}
       >
         <Typography variant="h2"> {note}</Typography>
