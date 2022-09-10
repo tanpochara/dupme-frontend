@@ -40,7 +40,7 @@ const Home: NextPage = () => {
               <Box paddingLeft={"430px"} paddingBottom="20px">
                 <Timer />
               </Box>
-              <Piano />
+              {/* <Piano /> */}
             </Box>
           </Grid>
         </Grid>

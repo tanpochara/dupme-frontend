@@ -1,7 +1,28 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NoteInterface } from "../@types/note";
+import * as Tone from "tone";
+import { Socket } from "socket.io-client";
+
+// const Key = styled(Button)`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: flex-end;
+//   width: 75;
+//   height: 400px;
+//   border: 1px solid black;
+//   padding: 10px;
+//   background: white;
+
+//   :focus {
+//     backgroud: red;
+//   }
+
+//   :active {
+//     background: red;
+//   }
+// `;
 
 const BlackKey = styled(Button)`
   width: 40px;
@@ -46,28 +67,50 @@ const WhiteKey = styled(Button)`
 `;
 interface Props {
   note: string;
-  color: string;
+  color?: "black" | "white";
+  piano: Tone.PolySynth<Tone.Synth<Tone.SynthOptions>>;
+  socket: Socket;
 }
 
-export const PianoKey: React.FC<Props> = ({ note, color }) => {
-  const isWhite = color == "white";
-  // const audio = new Audio(`/sounds/piano_${note}.mp3`);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+export const PianoKey: React.FC<Props> = ({ note, color, piano, socket }) => {
+  const [isWhite, setIsWhite] = useState(true);
+  const handlePlayKey = () => {
+    // setIsWhite(false);
+    const time = Tone.now();
+    piano.triggerAttackRelease(note, "16n", time);
+    setTimeout(() => {
+      setIsWhite(true);
+    }, 500);
+  };
+
+  const elementRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setAudio(new Audio(`/sounds/piano_${note}.mp3`));
-  }, [note]);
+    socket.on("opponentKeyPressed", (msg) => {
+      if (msg == note) {
+        console.log(note, msg);
+        setIsWhite(false);
+        elementRef.current?.click();
+      }
+    });
 
-  const handleClickKey = () => {
-    audio?.play();
-  };
+    return () => {
+      socket.off("opponentKeyPressed");
+    };
+  }, [note, socket]);
+
   return (
     <>
-      {isWhite ? (
-        <WhiteKey onClick={handleClickKey} disableRipple />
-      ) : (
-        <BlackKey onClick={handleClickKey} disableRipple />
-      )}
+      <WhiteKey
+        onClick={handlePlayKey}
+        disableRipple
+        ref={elementRef}
+        sx={{ backgroundColor: isWhite ? "white" : "red" }}
+        // sx={{ backgroundColor: "red" }}
+      >
+        {" "}
+        <Typography variant="h2"> {note}</Typography>
+      </WhiteKey>
     </>
   );
 };

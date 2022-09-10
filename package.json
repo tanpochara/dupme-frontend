@@ -15,7 +15,9 @@
     "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-timer-hook": "^3.0.5"
+    "react-timer-hook": "^3.0.5",
+    "socket.io-client": "^4.5.2",
+    "tone": "^14.7.77"
   },
   "devDependencies": {
     "@types/node": "18.7.16",
