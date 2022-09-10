@@ -19,7 +19,7 @@ const Home: NextPage = () => {
         alignItems="center"
       >
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <Box padding="20px" textAlign="center">
               <Typography variant="h2" paddingBottom="20px">
                 {" "}
@@ -29,18 +29,6 @@ const Home: NextPage = () => {
                 <Timer />
               </Box>
               <Piano />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box padding="20px" textAlign="center">
-              <Typography variant="h2" paddingBottom="20px">
-                {" "}
-                Player 2 : Points
-              </Typography>
-              <Box paddingLeft={"430px"} paddingBottom="20px">
-                <Timer />
-              </Box>
-              {/* <Piano /> */}
             </Box>
           </Grid>
         </Grid>
