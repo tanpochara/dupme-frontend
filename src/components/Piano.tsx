@@ -1,46 +1,62 @@
-import { Box, Button, styled } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { Box, Button, styled, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useTimer } from "react-timer-hook";
 import { io } from "socket.io-client";
 import * as Tone from "tone";
 import { notes } from "../constant/notes";
 import { PianoKey } from "./PianoKey";
 
-const socket = io("http://localhost:81", {
-  transports: ["websocket"],
-});
-
 export const Piano = () => {
   const [piano, setPiano] = useState<any>();
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 10);
+  const {
+    seconds,
+    minutes,
+    hours,
+    days,
+    isRunning,
+    start,
+    pause,
+    resume,
+    restart,
+  } = useTimer({
+    expiryTimestamp: time,
+    onExpire: () => {
+      setIsPlaying(false);
+    },
+  });
 
   useEffect(() => {
     const temp = new Tone.Synth().toDestination();
     Tone.start();
     setPiano(temp);
   }, []);
+
   return (
-    // <PianoBox>
-    //   <PianoKey piano={piano} note="C4" socket={socket} />
-    //   <PianoKey piano={piano} note="D4" socket={socket} />
-    //   <PianoKey piano={piano} note="E4" socket={socket} />
-    //   <PianoKey piano={piano} note="F4" socket={socket} />
-    //   <PianoKey piano={piano} note="G4" socket={socket} />
-    //   <PianoKey piano={piano} note="A4" socket={socket} />
-    //   <PianoKey piano={piano} note="B4" socket={socket} />
-    // </PianoBox>
     <>
-      <PianoBox>
-        {notes.map((note) => (
-          <PianoKey
-            key={note}
-            piano={piano}
-            note={note}
-            socket={socket}
-            isPlaying={isPlaying}
-          />
-        ))}
-      </PianoBox>
-      <Button onClick={() => setIsPlaying(!isPlaying)}> toggle </Button>
+      <Box padding="20px" textAlign="center">
+        <Typography variant="h2" paddingBottom="20px">
+          {" "}
+          Player 1 : Points
+        </Typography>
+        <Box paddingLeft={"450px"} paddingBottom="20px">
+          <Box>
+            <span> {`${minutes} : ${seconds}`} </span>
+          </Box>
+        </Box>
+        <PianoBox>
+          {notes.map((note) => (
+            <PianoKey
+              key={note}
+              piano={piano}
+              note={note}
+              isPlaying={isPlaying}
+            />
+          ))}
+        </PianoBox>
+      </Box>
     </>
   );
 };

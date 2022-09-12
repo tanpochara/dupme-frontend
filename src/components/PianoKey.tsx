@@ -1,8 +1,15 @@
 import { Typography } from "@mui/material";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import * as Tone from "tone";
 import { Socket } from "socket.io-client";
 import styled from "styled-components";
+import { SocketContext } from "../context/SocketContext";
 
 const Key = styled.button`
   display: flex;
@@ -22,17 +29,12 @@ interface Props {
   note: string;
   color?: "black" | "white";
   piano: Tone.PolySynth<Tone.Synth<Tone.SynthOptions>>;
-  socket: Socket;
   isPlaying: boolean;
 }
 
-export const PianoKey: React.FC<Props> = ({
-  note,
-  piano,
-  socket,
-  isPlaying,
-}) => {
+export const PianoKey: React.FC<Props> = ({ note, piano, isPlaying }) => {
   const [isWhite, setIsWhite] = useState(true);
+  const { socket } = useContext(SocketContext);
 
   const handlePlayKey = useCallback(() => {
     setIsWhite(false);
