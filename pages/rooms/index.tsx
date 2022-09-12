@@ -3,8 +3,9 @@ import { Grid, Modal, Typography, Button, Input } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { NextPage } from "next";
 import { useContext, useEffect, useState } from "react";
-import { SocketContext } from "../src/context/SocketContext";
-import { emit } from "process";
+import { SocketContext } from "../../src/context/SocketContext";
+import { useRouter } from "next/router";
+import { Rooms } from "../../src/@types/room";
 
 const RoomBox = styled.div`
   border-radius: 20px;
@@ -33,9 +34,10 @@ const style = {
   borderRadius: "16px",
 };
 
-const Rooms: NextPage = () => {
+const RoomsPage: NextPage = () => {
   const { socket } = useContext(SocketContext);
-  const [rooms, setRooms] = useState<any>();
+  const router = useRouter();
+  const [rooms, setRooms] = useState<Rooms>();
   const [open, setOpen] = useState<boolean>(false);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<any>();
@@ -58,6 +60,7 @@ const Rooms: NextPage = () => {
 
   const handleJoinRoom = (name: string) => {
     socket.emit("joinRoom", name);
+    router.push(`/rooms/${name}`);
     handleClose();
   };
 
@@ -76,6 +79,8 @@ const Rooms: NextPage = () => {
     };
 
     socket.emit("createRoom", JSON.stringify(object));
+    router.push(`/rooms/${inputRoomName}`);
+    setIsCreating(false);
   };
 
   return (
@@ -123,6 +128,7 @@ const Rooms: NextPage = () => {
           </Typography>
           <Box textAlign={"right"}>
             <Button
+              disabled={selectedRoom?.isFull}
               onClick={() => {
                 handleJoinRoom(selectedRoom?.name);
               }}
@@ -167,4 +173,4 @@ const Rooms: NextPage = () => {
   );
 };
 
-export default Rooms;
+export default RoomsPage;
