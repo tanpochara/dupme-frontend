@@ -1,32 +1,55 @@
-import { Container, Box, Typography, Button } from "@mui/material";
+import { Container, Box, Typography, Button, Grid, Modal } from "@mui/material";
+import { time } from "console";
 import { constants } from "fs/promises";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { Room, Rooms } from "../../src/@types/room";
+import { GameParams, Room, Rooms } from "../../src/@types/room";
+import { Piano } from "../../src/components/Piano";
 import { SocketContext } from "../../src/context/SocketContext";
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "1px solid #000",
+  boxShadow: 24,
+  p: 8,
+  borderRadius: "15px",
+};
 
 const RoomGame = () => {
   const { socket } = useContext(SocketContext);
   const [roomData, setRoomData] = useState<Room>();
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [gameParams, setGameParams] = useState<GameParams>();
+  const [start, setStart] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [found, setFound] = useState(true);
   const router = useRouter();
   const path = router.query;
 
   useEffect(() => {
-    socket.emit("getRoom");
+    if (socket.connected) {
+      socket.emit("getRoom");
 
-    socket.on("currentRoom", (msg: Rooms) => {
-      if (msg[path.id as string]) {
-        setRoomData(msg[path.id as string]);
-      } else {
-        setFound(false);
-      }
-    });
+      socket.on("currentRoom", (msg: Rooms) => {
+        if (msg[path.id as string]) {
+          setRoomData(msg[path.id as string]);
+        } else {
+          setFound(false);
+        }
+      });
 
-    return () => {
-      socket.off("currentRoom");
-    };
-  });
+      return () => {
+        socket.off("currentRoom");
+      };
+    }
+  }, [path.id, socket]);
 
   const handleLeaveRoom = () => {
     socket.emit("playerLeaveRoom", roomData?.name);
@@ -37,10 +60,38 @@ const RoomGame = () => {
     socket.emit("playerReady", roomData?.name);
   };
 
+  useEffect(() => {
+    if (!roomData) return;
+
+    // if (roomData.players[0]?.isReady && roomData.players[1]?.isReady) {
+    //   handleOpen();
+    //   setStart(true);
+    //   setIsPlaying(
+    //     socket.id.toLowerCase() == roomData?.players[0].id.toLowerCase()
+    //   );
+    // }
+
+    if (socket.connected) {
+      socket.on("gameStart", (params: GameParams) => {
+        setGameParams(params);
+        setIsPlaying(
+          params.playerPlaying.id.toLowerCase() == socket.id.toLowerCase()
+        );
+        handleOpen();
+        setStart(true);
+      });
+
+      return () => {
+        socket.off("gameStart");
+      };
+    }
+  }, [roomData, socket, socket.id]);
+
   if (!found) return <h1> error path not found</h1>;
 
   return (
-    <Container>
+    <Container style={{ height: "100vh" }}>
+      {JSON.stringify(roomData)}
       <Box textAlign={"right"}>
         <Button onClick={handleLeaveRoom}> leave</Button>
       </Box>
@@ -76,6 +127,47 @@ const RoomGame = () => {
           );
         })}
       </Box>
+      <Box
+        height={"100vh"}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12}>
+            <Piano
+              isPlaying={isPlaying}
+              setIsPlaying={setIsPlaying}
+              time={gameParams ? gameParams.time : 10}
+              start={start}
+              round={gameParams ? gameParams.round : 1}
+            />
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h3">
+            Game is about to start
+          </Typography>
+          <Typography
+            id="modal-modal-description"
+            variant="body1"
+            sx={{ mt: 2 }}
+          >
+            {isPlaying
+              ? "you will be starting first"
+              : "Your opponent will be starting first"}
+          </Typography>
+        </Box>
+      </Modal>
     </Container>
   );
 };

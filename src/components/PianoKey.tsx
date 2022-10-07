@@ -30,14 +30,25 @@ interface Props {
   color?: "black" | "white";
   piano: Tone.PolySynth<Tone.Synth<Tone.SynthOptions>>;
   isPlaying: boolean;
+  setRecordSequence: (seq: any) => void;
+  recordSequence: string[];
 }
 
-export const PianoKey: React.FC<Props> = ({ note, piano, isPlaying }) => {
+export const PianoKey: React.FC<Props> = ({
+  note,
+  piano,
+  isPlaying,
+  setRecordSequence,
+  recordSequence,
+}) => {
   const [isWhite, setIsWhite] = useState(true);
   const { socket } = useContext(SocketContext);
 
   const handlePlayKey = useCallback(() => {
     setIsWhite(false);
+    const temp = recordSequence;
+    temp.push(note);
+    setRecordSequence(temp);
     const time = Tone.now();
     if (isPlaying) {
       socket.emit("keyPressed", note);
@@ -46,21 +57,23 @@ export const PianoKey: React.FC<Props> = ({ note, piano, isPlaying }) => {
     setTimeout(() => {
       setIsWhite(true);
     }, 300);
-  }, [isPlaying, note, piano, socket]);
+  }, [isPlaying, note, piano, recordSequence, setRecordSequence, socket]);
 
   useEffect(() => {
     if (isPlaying) return;
 
-    socket.on("opponentKeyPressed", (msg) => {
-      if (msg == note) {
-        setIsWhite(false);
-        handlePlayKey();
-      }
-    });
+    if (socket.connected) {
+      socket.on("opponentKeyPressed", (msg) => {
+        if (msg == note) {
+          setIsWhite(false);
+          handlePlayKey();
+        }
+      });
 
-    return () => {
-      socket.off("opponentKeyPressed");
-    };
+      return () => {
+        socket.off("opponentKeyPressed");
+      };
+    }
   }, [handlePlayKey, isPlaying, note, socket]);
 
   return (

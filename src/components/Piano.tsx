@@ -6,27 +6,41 @@ import * as Tone from "tone";
 import { notes } from "../constant/notes";
 import { PianoKey } from "./PianoKey";
 
-export const Piano = () => {
+interface Props {
+  isPlaying: boolean;
+  start: boolean;
+  setIsPlaying: (status: boolean) => void;
+  time: number;
+  round: number;
+}
+
+export const Piano: React.FC<Props> = ({
+  isPlaying,
+  start: isStart,
+  setIsPlaying,
+  time: timer,
+  round,
+}) => {
   const [piano, setPiano] = useState<any>();
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 10);
-  const {
-    seconds,
-    minutes,
-    hours,
-    days,
-    isRunning,
-    start,
-    pause,
-    resume,
-    restart,
-  } = useTimer({
+  time.setSeconds(time.getSeconds() + timer);
+  const [recordSequence, setRecordSequence] = useState<string[]>([]);
+  const { seconds, minutes, start, pause } = useTimer({
     expiryTimestamp: time,
     onExpire: () => {
+      console.log(recordSequence);
       setIsPlaying(false);
     },
+    autoStart: false,
   });
+
+  useEffect(() => {
+    pause();
+
+    if (isStart) {
+      start();
+    }
+  }, [isStart, pause, start]);
 
   useEffect(() => {
     const temp = new Tone.Synth().toDestination();
@@ -53,6 +67,8 @@ export const Piano = () => {
               piano={piano}
               note={note}
               isPlaying={isPlaying}
+              setRecordSequence={setRecordSequence}
+              recordSequence={recordSequence}
             />
           ))}
         </PianoBox>

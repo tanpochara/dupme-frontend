@@ -14,3 +14,9 @@ export interface Player {
   isReady: boolean;
   currentRoom: string;
 }
+
+export interface GameParams {
+  playerPlaying: Player;
+  round: number;
+  time: number;
+}

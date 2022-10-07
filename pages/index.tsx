@@ -17,11 +17,7 @@ const Home: NextPage = () => {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={12}>
-            <Piano />
-          </Grid>
-        </Grid>
+        <Typography variant="h1"> hello world</Typography>
       </Box>
     </>
   );
