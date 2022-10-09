@@ -26,6 +26,7 @@ const RoomGame = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [gameParams, setGameParams] = useState<GameParams>();
   const [start, setStart] = useState<boolean>(false);
+  const [finish, setFinish] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -63,14 +64,6 @@ const RoomGame = () => {
   useEffect(() => {
     if (!roomData) return;
 
-    // if (roomData.players[0]?.isReady && roomData.players[1]?.isReady) {
-    //   handleOpen();
-    //   setStart(true);
-    //   setIsPlaying(
-    //     socket.id.toLowerCase() == roomData?.players[0].id.toLowerCase()
-    //   );
-    // }
-
     if (socket.connected) {
       socket.on("gameStart", (params: GameParams) => {
         setGameParams(params);
@@ -81,6 +74,10 @@ const RoomGame = () => {
         setStart(true);
       });
 
+      socket.on("gameFinish", (msg) => {
+        setFinish(true);
+      });
+
       return () => {
         socket.off("gameStart");
       };
@@ -88,6 +85,8 @@ const RoomGame = () => {
   }, [roomData, socket, socket.id]);
 
   if (!found) return <h1> error path not found</h1>;
+
+  if (finish) return <h1> finish leaw i sus </h1>;
 
   return (
     <Container style={{ height: "100vh" }}>
@@ -142,6 +141,7 @@ const RoomGame = () => {
               time={gameParams ? gameParams.time : 10}
               start={start}
               round={gameParams ? gameParams.round : 1}
+              roomName={roomData ? roomData.name : ""}
             />
           </Grid>
         </Grid>

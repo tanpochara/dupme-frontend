@@ -1,9 +1,10 @@
 import { Box, Button, styled, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
 import { io } from "socket.io-client";
 import * as Tone from "tone";
 import { notes } from "../constant/notes";
+import { SocketContext } from "../context/SocketContext";
 import { PianoKey } from "./PianoKey";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
   setIsPlaying: (status: boolean) => void;
   time: number;
   round: number;
+  roomName: string;
 }
 
 export const Piano: React.FC<Props> = ({
@@ -20,19 +22,51 @@ export const Piano: React.FC<Props> = ({
   setIsPlaying,
   time: timer,
   round,
+  roomName,
 }) => {
+  console.log(round);
   const [piano, setPiano] = useState<any>();
   const time = new Date();
   time.setSeconds(time.getSeconds() + timer);
   const [recordSequence, setRecordSequence] = useState<string[]>([]);
-  const { seconds, minutes, start, pause } = useTimer({
+  const { socket } = useContext(SocketContext);
+
+  const handleRoundFinish = useCallback(() => {
+    if (socket.connected) {
+      const params = {
+        round,
+        roomName,
+        sequence: recordSequence,
+      };
+      socket.emit("roundFinish", JSON.stringify(params));
+    }
+  }, [socket, round, roomName, recordSequence]);
+
+  const { seconds, minutes, start, pause, restart } = useTimer({
     expiryTimestamp: time,
     onExpire: () => {
-      console.log(recordSequence);
-      setIsPlaying(false);
+      if (isPlaying) {
+        handleRoundFinish();
+      }
+      setRecordSequence([]);
+      setTimeout(() => {
+        const newTime = new Date();
+        newTime.setSeconds(newTime.getSeconds() + timer);
+        console.log("new time", newTime.getSeconds(), "new timer", timer);
+        restart(newTime, true);
+        start();
+      }, 1000);
     },
     autoStart: false,
   });
+
+  // const handleNewTimer = useCallback(() => {
+  //   const newTime = new Date();
+  //   newTime.setSeconds(newTime.getSeconds() + timer);
+  //   console.log("new time", newTime.getSeconds(), "new timer", timer);
+  //   restart(newTime, true);
+  //   start();
+  // }, [restart, start, timer]);
 
   useEffect(() => {
     pause();
@@ -40,7 +74,7 @@ export const Piano: React.FC<Props> = ({
     if (isStart) {
       start();
     }
-  }, [isStart, pause, start]);
+  }, [isStart]);
 
   useEffect(() => {
     const temp = new Tone.Synth().toDestination();
