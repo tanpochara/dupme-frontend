@@ -2,7 +2,8 @@ import { Container, Box, Typography, Button, Grid, Modal } from "@mui/material";
 import { time } from "console";
 import { constants } from "fs/promises";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useTimer } from "react-timer-hook";
 import { GameParams, Room, Rooms } from "../../src/@types/room";
 import { Piano } from "../../src/components/Piano";
 import { SocketContext } from "../../src/context/SocketContext";
@@ -25,14 +26,27 @@ const RoomGame = () => {
   const [roomData, setRoomData] = useState<Room>();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [gameParams, setGameParams] = useState<GameParams>();
-  const [start, setStart] = useState<boolean>(false);
+  const [recordSequence, setRecordSequence] = useState<string[]>([]);
+  const [isStart, setIsStart] = useState<boolean>(false);
   const [finish, setFinish] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [found, setFound] = useState(true);
+  const [time, setTime] = useState<Date>(new Date());
   const router = useRouter();
   const path = router.query;
+
+  const { seconds, minutes, start, pause, restart } = useTimer({
+    expiryTimestamp: time,
+    onExpire: () => {
+      if (isPlaying) {
+        handleRoundFinish();
+      }
+      setRecordSequence([]);
+    },
+    autoStart: false,
+  });
 
   useEffect(() => {
     if (socket.connected) {
@@ -61,6 +75,17 @@ const RoomGame = () => {
     socket.emit("playerReady", roomData?.name);
   };
 
+  const handleRoundFinish = useCallback(() => {
+    if (socket.connected) {
+      const params = {
+        round: gameParams?.round,
+        roomName: roomData?.name,
+        sequence: recordSequence,
+      };
+      socket.emit("roundFinish", JSON.stringify(params));
+    }
+  }, [socket, gameParams?.round, roomData?.name, recordSequence]);
+
   useEffect(() => {
     if (!roomData) return;
 
@@ -71,7 +96,11 @@ const RoomGame = () => {
           params.playerPlaying.id.toLowerCase() == socket.id.toLowerCase()
         );
         handleOpen();
-        setStart(true);
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + params.time);
+        setTime(time);
+        restart(time, true);
+        setIsStart(true);
       });
 
       socket.on("gameFinish", (msg) => {
@@ -80,6 +109,7 @@ const RoomGame = () => {
 
       return () => {
         socket.off("gameStart");
+        socket.off("gameFinish");
       };
     }
   }, [roomData, socket, socket.id]);
@@ -136,12 +166,11 @@ const RoomGame = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}>
             <Piano
+              minutes={minutes}
+              seconds={seconds}
+              recordSequence={recordSequence}
+              setRecordSequence={setRecordSequence}
               isPlaying={isPlaying}
-              setIsPlaying={setIsPlaying}
-              time={gameParams ? gameParams.time : 10}
-              start={start}
-              round={gameParams ? gameParams.round : 1}
-              roomName={roomData ? roomData.name : ""}
             />
           </Grid>
         </Grid>
@@ -162,9 +191,7 @@ const RoomGame = () => {
             variant="body1"
             sx={{ mt: 2 }}
           >
-            {isPlaying
-              ? "you will be starting first"
-              : "Your opponent will be starting first"}
+            {isPlaying ? "it your turn" : "its your opponent turn"}
           </Typography>
         </Box>
       </Modal>

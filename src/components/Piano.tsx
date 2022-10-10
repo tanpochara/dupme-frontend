@@ -8,57 +8,21 @@ import { SocketContext } from "../context/SocketContext";
 import { PianoKey } from "./PianoKey";
 
 interface Props {
+  minutes: number;
+  seconds: number;
+  recordSequence: string[];
   isPlaying: boolean;
-  start: boolean;
-  setIsPlaying: (status: boolean) => void;
-  time: number;
-  round: number;
-  roomName: string;
+  setRecordSequence: any;
 }
 
 export const Piano: React.FC<Props> = ({
+  minutes,
+  seconds,
+  recordSequence,
+  setRecordSequence,
   isPlaying,
-  start: isStart,
-  setIsPlaying,
-  time: timer,
-  round,
-  roomName,
 }) => {
-  console.log(round);
   const [piano, setPiano] = useState<any>();
-  const time = new Date();
-  time.setSeconds(time.getSeconds() + timer);
-  const [recordSequence, setRecordSequence] = useState<string[]>([]);
-  const { socket } = useContext(SocketContext);
-
-  const handleRoundFinish = useCallback(() => {
-    if (socket.connected) {
-      const params = {
-        round,
-        roomName,
-        sequence: recordSequence,
-      };
-      socket.emit("roundFinish", JSON.stringify(params));
-    }
-  }, [socket, round, roomName, recordSequence]);
-
-  const { seconds, minutes, start, pause, restart } = useTimer({
-    expiryTimestamp: time,
-    onExpire: () => {
-      if (isPlaying) {
-        handleRoundFinish();
-      }
-      setRecordSequence([]);
-      setTimeout(() => {
-        const newTime = new Date();
-        newTime.setSeconds(newTime.getSeconds() + timer);
-        console.log("new time", newTime.getSeconds(), "new timer", timer);
-        restart(newTime, true);
-        start();
-      }, 1000);
-    },
-    autoStart: false,
-  });
 
   // const handleNewTimer = useCallback(() => {
   //   const newTime = new Date();
@@ -67,14 +31,6 @@ export const Piano: React.FC<Props> = ({
   //   restart(newTime, true);
   //   start();
   // }, [restart, start, timer]);
-
-  useEffect(() => {
-    pause();
-
-    if (isStart) {
-      start();
-    }
-  }, [isStart]);
 
   useEffect(() => {
     const temp = new Tone.Synth().toDestination();
