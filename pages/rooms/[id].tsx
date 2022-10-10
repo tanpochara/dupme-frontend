@@ -13,6 +13,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
 import { GameParams, Room, Rooms } from "../../src/@types/room";
 import { Piano } from "../../src/components/Piano";
+import { WinnerView } from "../../src/components/WinnerView";
 import { SocketContext } from "../../src/context/SocketContext";
 
 const style = {
@@ -124,7 +125,7 @@ const RoomGame = () => {
 
   if (!found) return <h1> error path not found</h1>;
 
-  if (finish) return <h1> finish leaw i sus </h1>;
+  if (finish) return <WinnerView roomData={roomData} />;
 
   return (
     <Container style={{ height: "100vh" }}>
