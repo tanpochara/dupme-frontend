@@ -40,29 +40,18 @@ export const Piano: React.FC<Props> = ({
 
   return (
     <>
-      <Box padding="20px" textAlign="center">
-        <Typography variant="h2" paddingBottom="20px">
-          {" "}
-          Player 1 : Points
-        </Typography>
-        <Box paddingLeft={"450px"} paddingBottom="20px">
-          <Box>
-            <span> {`${minutes} : ${seconds}`} </span>
-          </Box>
-        </Box>
-        <PianoBox>
-          {notes.map((note) => (
-            <PianoKey
-              key={note}
-              piano={piano}
-              note={note}
-              isPlaying={isPlaying}
-              setRecordSequence={setRecordSequence}
-              recordSequence={recordSequence}
-            />
-          ))}
-        </PianoBox>
-      </Box>
+      <PianoBox>
+        {notes.map((note) => (
+          <PianoKey
+            key={note}
+            piano={piano}
+            note={note}
+            isPlaying={isPlaying}
+            setRecordSequence={setRecordSequence}
+            recordSequence={recordSequence}
+          />
+        ))}
+      </PianoBox>
     </>
   );
 };

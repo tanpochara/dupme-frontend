@@ -7,12 +7,14 @@ export interface Room {
   bet: string;
   players: Player[];
   isFull: boolean;
+  currentRound: number;
 }
 
 export interface Player {
   id: string;
   isReady: boolean;
   currentRoom: string;
+  points: number;
 }
 
 export interface GameParams {

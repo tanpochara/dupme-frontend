@@ -1,5 +1,12 @@
-import { Container, Box, Typography, Button, Grid, Modal } from "@mui/material";
-import { time } from "console";
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  Grid,
+  Modal,
+  Stack,
+} from "@mui/material";
 import { constants } from "fs/promises";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -49,9 +56,8 @@ const RoomGame = () => {
   });
 
   useEffect(() => {
+    socket.emit("getRoom");
     if (socket.connected) {
-      socket.emit("getRoom");
-
       socket.on("currentRoom", (msg: Rooms) => {
         if (msg[path.id as string]) {
           setRoomData(msg[path.id as string]);
@@ -95,7 +101,9 @@ const RoomGame = () => {
         setIsPlaying(
           params.playerPlaying.id.toLowerCase() == socket.id.toLowerCase()
         );
-        handleOpen();
+        if (params.round == 1) {
+          handleOpen();
+        }
         const time = new Date();
         time.setSeconds(time.getSeconds() + params.time);
         setTime(time);
@@ -124,57 +132,91 @@ const RoomGame = () => {
       <Box textAlign={"right"}>
         <Button onClick={handleLeaveRoom}> leave</Button>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        }}
-      >
-        {roomData?.players.map((player) => {
-          return (
-            <>
-              <Box
-                sx={{
-                  backgroundColor: "#ECF1F4",
-                  borderRadius: "16px",
-                  padding: "20px",
-                }}
-              >
-                <Typography> {player.id}</Typography>
-                <Typography>
-                  {" "}
-                  {`status : ${player.isReady ? "ready" : "not ready"}`}
-                </Typography>
-                {socket.id == player.id && (
-                  <Box textAlign="right" paddingTop={"10px"}>
-                    <Button onClick={handleReady}>ready</Button>
-                  </Box>
-                )}
-              </Box>
-            </>
-          );
-        })}
-      </Box>
-      <Box
-        height={"100vh"}
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={12}>
-            <Piano
-              minutes={minutes}
-              seconds={seconds}
-              recordSequence={recordSequence}
-              setRecordSequence={setRecordSequence}
-              isPlaying={isPlaying}
-            />
+      {!isStart && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+          }}
+        >
+          {roomData?.players.map((player) => {
+            return (
+              <>
+                <Box
+                  sx={{
+                    backgroundColor: "#ECF1F4",
+                    borderRadius: "16px",
+                    padding: "20px",
+                  }}
+                >
+                  <Typography> {player.id}</Typography>
+                  <Typography>
+                    {" "}
+                    {`status : ${player.isReady ? "ready" : "not ready"}`}
+                  </Typography>
+                  {socket.id == player.id && (
+                    <Box textAlign="right" paddingTop={"10px"}>
+                      <Button onClick={handleReady}>ready</Button>
+                    </Box>
+                  )}
+                </Box>
+              </>
+            );
+          })}
+        </Box>
+      )}
+      {isStart && (
+        <Box
+          height={"100vh"}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={12}>
+              <Container>
+                <Box textAlign="center" mb={"30px"}>
+                  <Typography variant="h2">
+                    {`time remaining : ${seconds} seconds`}{" "}
+                  </Typography>
+                </Box>
+                <Stack
+                  direction="row"
+                  spacing={"200px"}
+                  justifyContent="center"
+                >
+                  <Typography
+                    variant="h5"
+                    paddingBottom="20px"
+                    color={isPlaying ? "black" : "red"}
+                    textAlign="center"
+                  >
+                    {roomData?.players[0].id} : {roomData?.players[0].points}
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    paddingBottom="20px"
+                    color={!isPlaying ? "black" : "red"}
+                    textAlign="center"
+                  >
+                    {`${roomData?.players[1].id} : ${roomData?.players[1].points}`}
+                  </Typography>
+                </Stack>
+
+                <Piano
+                  minutes={minutes}
+                  seconds={seconds}
+                  recordSequence={recordSequence}
+                  setRecordSequence={setRecordSequence}
+                  isPlaying={isPlaying}
+                />
+              </Container>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      )}
 
       <Modal
         open={open}
