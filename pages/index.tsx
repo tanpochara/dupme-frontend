@@ -18,7 +18,9 @@ const Home: NextPage = () => {
 
   const handleSetUsername = () => {
     socket.emit("registerName", username);
-    router.push("/rooms");
+    setTimeout(() => {
+      router.push("/rooms");
+    }, 400);
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
