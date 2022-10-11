@@ -1,4 +1,4 @@
-import { Typography, Box, Container, Grid } from "@mui/material";
+import { Typography, Box, Container, Grid, TextField } from "@mui/material";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -12,12 +12,18 @@ const Home: NextPage = () => {
     <>
       <Box
         height={"100vh"}
+        width="100%"
         display="flex"
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
       >
-        <Typography variant="h1"> hello world</Typography>
+        <TextField
+          required
+          id="outlined-required"
+          label="Required"
+          defaultValue="input your name"
+        />
       </Box>
     </>
   );
