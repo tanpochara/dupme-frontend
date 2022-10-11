@@ -18,20 +18,27 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
   const { socket } = useContext(SocketContext);
   const router = useRouter();
   const [winner, setWinner] = useState<string>("");
+  const [counter, setCounter] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!roomData) return;
+    if (!roomData || counter) return;
 
     const winner =
       roomData.players[0].points > roomData.players[1].points
         ? roomData.players[0].name
         : roomData.players[1].name;
     setWinner(winner);
-  }, [roomData]);
+    setCounter(true);
+  }, [counter, roomData]);
+
+  const handleLeaveRoom = () => {
+    socket.emit("playerLeaveRoom", roomData?.name);
+    router.push("/rooms");
+  };
 
   return (
     <Container>
-      <Box textAlign="right" onClick={() => router.push("/rooms")}>
+      <Box textAlign="right" onClick={handleLeaveRoom}>
         {" "}
         leave{" "}
       </Box>

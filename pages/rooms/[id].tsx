@@ -130,42 +130,45 @@ const RoomGame = () => {
   return (
     <Container style={{ height: "100vh" }}>
       {JSON.stringify(roomData)}
-      <Box textAlign={"right"}>
-        <Button onClick={handleLeaveRoom}> leave</Button>
-      </Box>
+
       {!isStart && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-evenly",
-            alignItems: "center",
-          }}
-        >
-          {roomData?.players.map((player) => {
-            return (
-              <>
-                <Box
-                  sx={{
-                    backgroundColor: "#ECF1F4",
-                    borderRadius: "16px",
-                    padding: "20px",
-                  }}
-                >
-                  <Typography> {player.name}</Typography>
-                  <Typography>
-                    {" "}
-                    {`status : ${player.isReady ? "ready" : "not ready"}`}
-                  </Typography>
-                  {socket.id == player.id && (
-                    <Box textAlign="right" paddingTop={"10px"}>
-                      <Button onClick={handleReady}>ready</Button>
-                    </Box>
-                  )}
-                </Box>
-              </>
-            );
-          })}
-        </Box>
+        <>
+          <Box textAlign={"right"}>
+            <Button onClick={handleLeaveRoom}> leave</Button>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+            }}
+          >
+            {roomData?.players.map((player) => {
+              return (
+                <>
+                  <Box
+                    sx={{
+                      backgroundColor: "#ECF1F4",
+                      borderRadius: "16px",
+                      padding: "20px",
+                    }}
+                  >
+                    <Typography> {player.name}</Typography>
+                    <Typography>
+                      {" "}
+                      {`status : ${player.isReady ? "ready" : "not ready"}`}
+                    </Typography>
+                    {socket.id == player.id && (
+                      <Box textAlign="right" paddingTop={"10px"}>
+                        <Button onClick={handleReady}>ready</Button>
+                      </Box>
+                    )}
+                  </Box>
+                </>
+              );
+            })}
+          </Box>
+        </>
       )}
       {isStart && (
         <Box
