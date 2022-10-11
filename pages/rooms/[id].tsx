@@ -151,7 +151,7 @@ const RoomGame = () => {
                     padding: "20px",
                   }}
                 >
-                  <Typography> {player.id}</Typography>
+                  <Typography> {player.name}</Typography>
                   <Typography>
                     {" "}
                     {`status : ${player.isReady ? "ready" : "not ready"}`}
@@ -194,7 +194,7 @@ const RoomGame = () => {
                     color={isPlaying ? "black" : "red"}
                     textAlign="center"
                   >
-                    {roomData?.players[0].id} : {roomData?.players[0].points}
+                    {roomData?.players[0].name} : {roomData?.players[0].points}
                   </Typography>
                   <Typography
                     variant="h5"
@@ -202,7 +202,7 @@ const RoomGame = () => {
                     color={!isPlaying ? "black" : "red"}
                     textAlign="center"
                   >
-                    {`${roomData?.players[1].id} : ${roomData?.players[1].points}`}
+                    {`${roomData?.players[1].name} : ${roomData?.players[1].points}`}
                   </Typography>
                 </Stack>
 

@@ -15,6 +15,7 @@ export interface Player {
   isReady: boolean;
   currentRoom: string;
   points: number;
+  name: string;
 }
 
 export interface GameParams {

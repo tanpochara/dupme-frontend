@@ -24,8 +24,8 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
 
     const winner =
       roomData.players[0].points > roomData.players[1].points
-        ? roomData.players[0].id
-        : roomData.players[1].id;
+        ? roomData.players[0].name
+        : roomData.players[1].name;
     setWinner(winner);
   }, [roomData]);
 
@@ -51,11 +51,11 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
             <Box
               width="full"
               padding="60px"
-              key={player.id}
+              key={player.name}
               sx={style}
               bgcolor={winner == player.id ? "cyan" : "white"}
             >
-              <Typography variant="h2"> {player.id}</Typography>
+              <Typography variant="h2"> {player.name}</Typography>
               <Typography variant="h3"> {player.points} </Typography>
             </Box>
           );
