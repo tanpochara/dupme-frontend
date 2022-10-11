@@ -24,14 +24,6 @@ export const Piano: React.FC<Props> = ({
 }) => {
   const [piano, setPiano] = useState<any>();
 
-  // const handleNewTimer = useCallback(() => {
-  //   const newTime = new Date();
-  //   newTime.setSeconds(newTime.getSeconds() + timer);
-  //   console.log("new time", newTime.getSeconds(), "new timer", timer);
-  //   restart(newTime, true);
-  //   start();
-  // }, [restart, start, timer]);
-
   useEffect(() => {
     const temp = new Tone.Synth().toDestination();
     Tone.start();
