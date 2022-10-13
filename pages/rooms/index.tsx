@@ -85,7 +85,10 @@ const RoomsPage: NextPage = () => {
 
   return (
     <Container>
-      <Typography variant="h1"> Current Rooms </Typography>
+      <Typography variant="h1" color="text.secondary">
+        {" "}
+        Current Rooms{" "}
+      </Typography>
       <Grid container spacing={2}>
         {rooms &&
           Object.keys(rooms).map((key, index) => {

@@ -1,19 +1,35 @@
-import { createTheme } from "@mui/material";
+// import { createTheme } from "@mui/material";
 
-// Create a theme instance.
-const theme = createTheme({
+import { PaletteMode } from "@mui/material";
+import { amber, deepOrange, grey } from "@mui/material/colors";
+
+export const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
-    primary: {
-      main: "#556cd6",
-    },
-    secondary: {
-      main: "#19857b",
-    },
-    error: {
-      main: "#ed2828",
-    },
+    mode,
+    ...(mode === "light"
+      ? {
+          // palette values for light mode
+          primary: amber,
+          divider: amber[200],
+          text: {
+            primary: grey[900],
+            secondary: grey[800],
+          },
+        }
+      : {
+          // palette values for dark mode
+          primary: deepOrange,
+          divider: deepOrange[700],
+          background: {
+            default: deepOrange[100],
+            paper: deepOrange[50],
+          },
+          text: {
+            primary: "#fff",
+            secondary: grey[500],
+          },
+        }),
   },
-
   typography: {
     fontFamily: ["Roboto", "sans-serif"].join(","),
     fontSize: 16,
@@ -97,5 +113,3 @@ const theme = createTheme({
     },
   },
 });
-
-export default theme;

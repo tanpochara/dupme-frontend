@@ -36,6 +36,7 @@ const Home: NextPage = () => {
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
+        sx={{ bgcolor: "background.default" }}
       >
         <TextField
           label="Username"
