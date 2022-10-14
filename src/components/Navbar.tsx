@@ -13,6 +13,7 @@ import Link from "next/link";
 import React, { useContext } from "react";
 import { ColorModeContext } from "../context/ColorModeContext";
 import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
+
 const navbox = {
   position: "static",
   width: "100%",
@@ -34,16 +35,6 @@ const link = {
     borderBottom: "1px solid red",
   },
 };
-// const link = {
-//   textDecoration: "none",
-//   color: "red",
-//   fontSize: "20px",
-//   marginLeft: "100px",
-//   "&:hover": {
-//     color: "yellow",
-//     borderBottom: "1px solid white",
-//   },
-// };
 
 function Navbar() {
   const colorMode = useContext(ColorModeContext);
@@ -51,7 +42,7 @@ function Navbar() {
   return (
     <Box sx={navbox}>
       <Stack direction="row" alignItems="center">
-        <Typography variant="h2" color="text.primary">
+        <Typography variant="h2" color="text.primary" className="hello">
           {" "}
           Dupme palungbai{" "}
         </Typography>
@@ -68,18 +59,23 @@ function Navbar() {
           </Link>
         </Stack>
       </Stack>
-      <IconButton
-        disableRipple
-        sx={{ ml: 1 }}
-        onClick={colorMode.toggleColorMode}
-        color="inherit"
-      >
-        {theme.palette.mode === "dark" ? (
-          <MdDarkMode />
-        ) : (
-          <MdOutlineLightMode />
-        )}
-      </IconButton>
+      <Stack alignItems="center" direction="row">
+        <audio controls loop className="custom-audio">
+          <source src="/sound/river_flows_in_you.mp3" type="audio/mpeg" />
+        </audio>
+        <IconButton
+          disableRipple
+          sx={{ ml: 1 }}
+          onClick={colorMode.toggleColorMode}
+          color="inherit"
+        >
+          {theme.palette.mode === "dark" ? (
+            <MdDarkMode />
+          ) : (
+            <MdOutlineLightMode />
+          )}
+        </IconButton>
+      </Stack>
     </Box>
   );
 }
