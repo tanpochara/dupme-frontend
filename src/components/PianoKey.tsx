@@ -32,6 +32,7 @@ interface Props {
   isPlaying: boolean;
   setRecordSequence: (seq: any) => void;
   recordSequence: string[];
+  isMuted: boolean;
 }
 
 export const PianoKey: React.FC<Props> = ({
@@ -40,6 +41,7 @@ export const PianoKey: React.FC<Props> = ({
   isPlaying,
   setRecordSequence,
   recordSequence,
+  isMuted,
 }) => {
   const [isWhite, setIsWhite] = useState(true);
   const { socket } = useContext(SocketContext);
@@ -53,11 +55,21 @@ export const PianoKey: React.FC<Props> = ({
     if (isPlaying) {
       socket.emit("keyPressed", note);
     }
-    piano.triggerAttackRelease(note, "16n", time);
+    if (!isMuted) {
+      piano.triggerAttackRelease(note, "16n", time);
+    }
     setTimeout(() => {
       setIsWhite(true);
     }, 300);
-  }, [isPlaying, note, piano, recordSequence, setRecordSequence, socket]);
+  }, [
+    isMuted,
+    isPlaying,
+    note,
+    piano,
+    recordSequence,
+    setRecordSequence,
+    socket,
+  ]);
 
   useEffect(() => {
     if (isPlaying) return;
