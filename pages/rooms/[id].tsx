@@ -82,6 +82,10 @@ const RoomGame = () => {
     socket.emit("playerReady", roomData?.name);
   };
 
+  const handleSurrender = () => {
+    socket.emit("playerSurrender", roomData?.name);
+  };
+
   const handleRoundFinish = useCallback(() => {
     if (socket.connected) {
       const params = {
@@ -178,6 +182,11 @@ const RoomGame = () => {
           justifyContent="center"
           alignItems="center"
         >
+          <Stack justifyContent="flex-start" width="100%">
+            <Box textAlign="right">
+              <Button onClick={handleSurrender}> surrender </Button>
+            </Box>
+          </Stack>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
               <Container>
