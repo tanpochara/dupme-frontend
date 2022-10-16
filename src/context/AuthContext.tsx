@@ -1,3 +1,4 @@
+import { Button, Typography, Box } from "@mui/material";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Players } from "../../src/@types/room";
@@ -33,15 +34,28 @@ export const AuthContextProvider = ({
     }
   }, [socket]);
 
-  useEffect(() => {
-    if (!isAuthen) {
-      router.push("/");
-    }
-  }, [isAuthen, router]);
-
   return (
     <>
-      <AuthContext.Provider value={false}>{children}</AuthContext.Provider>
+      <AuthContext.Provider value={false}>
+        {isAuthen || router.pathname == "/" ? (
+          children
+        ) : (
+          <>
+            <Box
+              height="100vh"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h1"> please register first </Typography>
+              <Button onClick={() => router.push("/")}> register </Button>
+            </Box>
+          </>
+        )}
+      </AuthContext.Provider>
     </>
   );
 };

@@ -18,6 +18,7 @@ const Home: NextPage = () => {
 
   const handleSetUsername = () => {
     socket.emit("registerName", username);
+    localStorage.setItem("name", username);
     setTimeout(() => {
       router.push("/rooms");
     }, 400);

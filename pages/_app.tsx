@@ -9,6 +9,7 @@ import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import Navbar from "../src/components/Navbar";
 import "@rainbow-me/rainbowkit/styles.css";
+import { useRouter } from "next/router";
 
 const { chains, provider } = configureChains(
   [chain.polygonMumbai],
@@ -27,13 +28,14 @@ const wagmiClient = createClient({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
         <ColorModeProvider>
           <SocketProvider>
             <AuthContextProvider>
-              <Navbar />
+              {router.pathname != "/" && <Navbar />}
               <Component {...pageProps} />
             </AuthContextProvider>
           </SocketProvider>

@@ -11,7 +11,7 @@ export const ColorModeProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [mode, setMode] = useState<"light" | "dark">("dark");
+  const [mode, setMode] = useState<"light" | "dark">("light");
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
