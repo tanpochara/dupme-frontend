@@ -13,13 +13,14 @@ import Link from "next/link";
 import React, { useContext } from "react";
 import { ColorModeContext } from "../context/ColorModeContext";
 import { MdDarkMode, MdOutlineLightMode } from "react-icons/md";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const navbox = {
   position: "static",
   width: "100%",
   padding: "10px",
   paddingLeft: "100px",
-  paddingRight: "200px",
+  paddingRight: "5vw",
   display: "flex",
   flexDirction: "row",
   bgcolor: "background.paper",
@@ -59,13 +60,10 @@ function Navbar() {
           </Link>
         </Stack>
       </Stack>
-      <Stack alignItems="center" direction="row">
-        <audio controls loop className="custom-audio">
-          <source src="/sound/river_flows_in_you.mp3" type="audio/mpeg" />
-        </audio>
+      <Stack alignItems="center" direction="row" spacing={5}>
         <IconButton
           disableRipple
-          sx={{ ml: 1 }}
+          sx={{ ml: 1, mr: 1 }}
           onClick={colorMode.toggleColorMode}
           color="inherit"
         >
@@ -75,6 +73,15 @@ function Navbar() {
             <MdOutlineLightMode />
           )}
         </IconButton>
+        <ConnectButton />
+        <audio
+          controls
+          loop
+          className="custom-audio"
+          style={{ width: "100px" }}
+        >
+          <source src="/sound/river_flows_in_you.mp3" type="audio/mpeg" />
+        </audio>
       </Stack>
     </Box>
   );

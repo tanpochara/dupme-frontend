@@ -38,7 +38,11 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
 
   return (
     <Container>
-      <Box textAlign="right" onClick={handleLeaveRoom}>
+      <Box
+        textAlign="right"
+        onClick={handleLeaveRoom}
+        style={{ cursor: "pointer" }}
+      >
         {" "}
         leave{" "}
       </Box>

@@ -1,5 +1,14 @@
 import styled from "styled-components";
-import { Grid, Modal, Typography, Button, Input } from "@mui/material";
+import {
+  Grid,
+  Modal,
+  Typography,
+  Button,
+  Input,
+  Radio,
+  FormControlLabel,
+  RadioGroup,
+} from "@mui/material";
 import { Box, Container } from "@mui/system";
 import { NextPage } from "next";
 import { useContext, useEffect, useState } from "react";
@@ -43,6 +52,7 @@ const RoomsPage: NextPage = () => {
   const [selectedRoom, setSelectedRoom] = useState<any>();
   const [inputRoomName, setInputRoomName] = useState<string>("");
   const [inputAmount, setInputAmount] = useState<number>(0);
+  const [selectedMode, setSelectedMode] = useState<"normal" | "hard">("normal");
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -72,10 +82,15 @@ const RoomsPage: NextPage = () => {
     setInputAmount(Number(e.target.value));
   };
 
+  const handleGameModeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedMode(e.target.value == "hard" ? "hard" : "normal");
+  };
+
   const handleCreateNewRoom = () => {
     const object = {
       name: inputRoomName,
       amount: `${inputAmount}`,
+      mode: selectedMode,
     };
 
     socket.emit("createRoom", JSON.stringify(object));
@@ -167,6 +182,20 @@ const RoomsPage: NextPage = () => {
             type="number"
             onChange={handleAmountChange}
           />
+          <RadioGroup
+            aria-labelledby="demo-controlled-radio-buttons-group"
+            name="controlled-radio-buttons-group"
+            value={selectedMode}
+            onChange={handleGameModeChange}
+            style={{ display: "flex", flexDirection: "row", marginTop: "10px" }}
+          >
+            <FormControlLabel
+              value="normal"
+              control={<Radio />}
+              label="Normal"
+            />
+            <FormControlLabel value="hard" control={<Radio />} label="Hard" />
+          </RadioGroup>
           <Box textAlign={"right"} pt={2}>
             <Button onClick={handleCreateNewRoom}>create</Button>
           </Box>

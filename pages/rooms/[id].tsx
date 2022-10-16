@@ -7,7 +7,6 @@ import {
   Modal,
   Stack,
 } from "@mui/material";
-import { constants } from "fs/promises";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useTimer } from "react-timer-hook";
@@ -133,8 +132,6 @@ const RoomGame = () => {
 
   return (
     <Container style={{ height: "100vh" }}>
-      {JSON.stringify(roomData)}
-
       {!isStart && (
         <>
           <Box textAlign={"right"}>
