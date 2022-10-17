@@ -132,6 +132,7 @@ const RoomGame = () => {
 
   return (
     <Container style={{ height: "100vh" }}>
+      {JSON.stringify(roomData)}
       {!isStart && (
         <>
           <Box textAlign={"right"}>

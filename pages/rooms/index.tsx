@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { Rooms } from "../../src/@types/room";
 import { useStaker } from "../../src/hooks/useStaker";
 import { join } from "path";
+import { useAccount } from "wagmi";
 
 const RoomBox = styled.div`
   border-radius: 20px;
@@ -55,9 +56,16 @@ const RoomsPage: NextPage = () => {
   const [inputRoomName, setInputRoomName] = useState<string>("");
   const [inputAmount, setInputAmount] = useState<number>(0);
   const [selectedMode, setSelectedMode] = useState<"normal" | "hard">("normal");
+  const { address } = useAccount();
   const { createRoom, joinRoom } = useStaker();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    if (!address) return;
+
+    socket.emit("connectWallet", address);
+  }, [address, socket]);
 
   useEffect(() => {
     socket.emit("getRoom");

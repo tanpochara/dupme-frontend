@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 import { useSigner } from "wagmi";
 import { STAKER_ADDRESS } from "../constant/address";
 import StakerABI from "../abis/StakerABI.json";
@@ -42,8 +42,11 @@ export const useStaker = () => {
   };
 
   const getRoom = async (roomName: string) => {
-    const contract = getContract();
-    if (!contract) return;
+    // console.log(process.env.RPC_PROVIDER);
+    const provider = new ethers.providers.JsonRpcProvider(
+      "https://polygon-mumbai.g.alchemy.com/v2/n1ydcokCWTdCEGPRnHRpZxA5sUyttOWr"
+    );
+    const contract = new ethers.Contract(STAKER_ADDRESS, StakerABI, provider);
 
     return await contract.rooms(roomName);
   };

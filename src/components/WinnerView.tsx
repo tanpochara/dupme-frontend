@@ -1,9 +1,18 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { Container } from "@mui/system";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { useAccount } from "wagmi";
 import { Room } from "../@types/room";
 import { SocketContext } from "../context/SocketContext";
+import { useStaker } from "../hooks/useStaker";
 
 interface Props {
   roomData: Room | undefined;
@@ -16,9 +25,26 @@ const style = {
 };
 export const WinnerView: React.FC<Props> = ({ roomData }) => {
   const { socket } = useContext(SocketContext);
+  const { getRoom, claimReward } = useStaker();
   const router = useRouter();
   const [winner, setWinner] = useState<string>("");
   const [counter, setCounter] = useState<boolean>(false);
+  const [winnerAddress, setWinnerAddress] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { address } = useAccount();
+
+  useEffect(() => {
+    if (!roomData || !roomData.name) return;
+
+    setIsLoading(true);
+    setTimeout(() => {
+      getRoom(roomData.name).then((data) => {
+        console.log(data);
+        setWinnerAddress(data.winner);
+        setIsLoading(false);
+      });
+    }, 5000);
+  }, []);
 
   useEffect(() => {
     if (!roomData || counter) return;
@@ -36,6 +62,17 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
     router.push("/rooms");
   };
 
+  const handleClaimReward = () => {
+    if (!roomData || !roomData?.name) return;
+
+    claimReward(roomData.name).then((data) => {
+      alert("successfully claim reward");
+      console.log(data);
+    });
+  };
+
+  if (isLoading) return <CircularProgress />;
+
   return (
     <Container>
       <Box
@@ -50,6 +87,16 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
         {" "}
         the winner is : {winner}
       </Typography>
+      <Typography textAlign="center" variant="h1">
+        {" "}
+        the winner address is : {winnerAddress}
+      </Typography>
+      {address === winnerAddress && (
+        <>
+          <Button onClick={handleClaimReward}>claim reward</Button>
+        </>
+      )}
+
       <Stack
         height="100vh"
         justifyContent="space-evenly"
