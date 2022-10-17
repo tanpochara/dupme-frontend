@@ -15,6 +15,8 @@ import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../src/context/SocketContext";
 import { useRouter } from "next/router";
 import { Rooms } from "../../src/@types/room";
+import { useStaker } from "../../src/hooks/useStaker";
+import { join } from "path";
 
 const RoomBox = styled.div`
   border-radius: 20px;
@@ -53,6 +55,7 @@ const RoomsPage: NextPage = () => {
   const [inputRoomName, setInputRoomName] = useState<string>("");
   const [inputAmount, setInputAmount] = useState<number>(0);
   const [selectedMode, setSelectedMode] = useState<"normal" | "hard">("normal");
+  const { createRoom, joinRoom } = useStaker();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -69,9 +72,13 @@ const RoomsPage: NextPage = () => {
   }, [socket]);
 
   const handleJoinRoom = (name: string) => {
-    socket.emit("joinRoom", name);
-    router.push(`/rooms/${name}`);
-    handleClose();
+    if (!rooms) return;
+    const amount = Number(rooms[name].bet);
+    joinRoom(amount, name).then((data) => {
+      socket.emit("joinRoom", name);
+      router.push(`/rooms/${name}`);
+      handleClose();
+    });
   };
 
   const handleRoomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,10 +99,12 @@ const RoomsPage: NextPage = () => {
       amount: `${inputAmount}`,
       mode: selectedMode,
     };
-
-    socket.emit("createRoom", JSON.stringify(object));
-    router.push(`/rooms/${inputRoomName}`);
-    setIsCreating(false);
+    createRoom(inputAmount, inputRoomName).then((data) => {
+      socket.emit("createRoom", JSON.stringify(object));
+      router.push(`/rooms/${inputRoomName}`);
+      setIsCreating(false);
+      alert("finish");
+    });
   };
 
   return (
