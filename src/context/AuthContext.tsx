@@ -20,6 +20,7 @@ export const AuthContextProvider = ({
 
     if (socket.connected) {
       socket.on("currentPlayer", (msg: Players) => {
+        console.log(JSON.stringify(msg));
         console.log("getPlayer");
         if (!msg[socket.id] || msg[socket.id].name == "") {
           setIsAuthen(false);

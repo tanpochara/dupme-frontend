@@ -45,7 +45,7 @@ function Navbar() {
       <Stack direction="row" alignItems="center">
         <Typography variant="h2" color="text.primary" className="hello">
           {" "}
-          Dupme palungbai{" "}
+          Dupme{" "}
         </Typography>
         <Stack direction="row" spacing={2} marginLeft="20px" mt="3px">
           <Link href="/rooms">
@@ -53,7 +53,7 @@ function Navbar() {
               rooms
             </Typography>
           </Link>
-          <Link href="/leader-board">
+          <Link href="/leaderboard">
             <Typography variant="h5" sx={link}>
               leaderboard
             </Typography>
