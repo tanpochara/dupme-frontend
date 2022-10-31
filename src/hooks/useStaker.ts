@@ -44,7 +44,7 @@ export const useStaker = () => {
   const getRoom = async (roomName: string) => {
     // console.log(process.env.RPC_PROVIDER);
     const provider = new ethers.providers.JsonRpcProvider(
-      "https://polygon-mumbai.g.alchemy.com/v2/n1ydcokCWTdCEGPRnHRpZxA5sUyttOWr"
+      process.env.NEXT_PUBLIC_RPC_PROVIDER
     );
     const contract = new ethers.Contract(STAKER_ADDRESS, StakerABI, provider);
 

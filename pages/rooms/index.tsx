@@ -22,10 +22,13 @@ import { useAccount } from "wagmi";
 const RoomBox = styled.div`
   border-radius: 20px;
   background-color: #ecf1f4;
-  padding: 10px;
-  width: 300px;
-  height: 100px;
+  padding: 15px;
+  height: 200px;
   border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   :hover {
     box-shadow: 0px 0px 8px rgba(255, 138, 0, 0.4);
@@ -135,6 +138,7 @@ const RoomsPage: NextPage = () => {
                 >
                   <Typography> {room.name} </Typography>
                   <Typography> {room.bet} </Typography>
+                  <Typography> {room.mode} </Typography>
                   <Typography> {`people: ${room.players.length}`} </Typography>
                 </RoomBox>
               </Grid>

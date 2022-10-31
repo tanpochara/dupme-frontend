@@ -37,13 +37,12 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
     if (!roomData || !roomData.name) return;
 
     setIsLoading(true);
-    setTimeout(() => {
-      getRoom(roomData.name).then((data) => {
-        console.log(data);
-        setWinnerAddress(data.winner);
-        setIsLoading(false);
-      });
-    }, 5000);
+
+    getRoom(roomData.name).then((data) => {
+      console.log(data);
+      setWinnerAddress(data.winner);
+      setIsLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -71,7 +70,20 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
     });
   };
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading)
+    return (
+      <Box
+        width="100%"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          height: "80vh",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
 
   return (
     <Container>

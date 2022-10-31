@@ -12,6 +12,7 @@ export interface Room {
   players: Player[];
   isFull: boolean;
   currentRound: number;
+  mode: string;
 }
 
 export interface Player {

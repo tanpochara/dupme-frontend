@@ -6,6 +6,7 @@ import {
   Grid,
   Modal,
   Stack,
+  Avatar,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -101,6 +102,7 @@ const RoomGame = () => {
 
     if (socket.connected) {
       socket.on("gameStart", (params: GameParams) => {
+        console.log("listened to gameStart!");
         setGameParams(params);
         setIsPlaying(
           params.playerPlaying.id.toLowerCase() == socket.id.toLowerCase()
@@ -112,6 +114,7 @@ const RoomGame = () => {
         time.setSeconds(time.getSeconds() + params.time);
         setTime(time);
         restart(time, true);
+        console.log("updating time!!");
         setIsStart(true);
       });
 
@@ -150,21 +153,30 @@ const RoomGame = () => {
                 <>
                   <Box
                     sx={{
+                      minH: "150px",
                       backgroundColor: "#ECF1F4",
                       borderRadius: "16px",
                       padding: "20px",
                     }}
                   >
-                    <Typography> {player.name}</Typography>
-                    <Typography>
-                      {" "}
-                      {`status : ${player.isReady ? "ready" : "not ready"}`}
-                    </Typography>
-                    {socket.id == player.id && (
-                      <Box textAlign="right" paddingTop={"10px"}>
-                        <Button onClick={handleReady}>ready</Button>
+                    <Stack direction="row" spacing={3} alignItems="center">
+                      <Avatar
+                        src={`https://avatars.dicebear.com/api/bottts/${player.name}.svg`}
+                        alt={player.name}
+                      />
+                      <Box>
+                        <Typography> {player.name}</Typography>
+                        <Typography>
+                          {" "}
+                          {`status : ${player.isReady ? "ready" : "not ready"}`}
+                        </Typography>
+                        {socket.id == player.id && (
+                          <Box textAlign="right" paddingTop={"10px"}>
+                            <Button onClick={handleReady}>ready</Button>
+                          </Box>
+                        )}
                       </Box>
-                    )}
+                    </Stack>
                   </Box>
                 </>
               );

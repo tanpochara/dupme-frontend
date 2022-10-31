@@ -31,6 +31,7 @@ const link = {
   flexGrow: "1",
   cursor: "pointer",
   color: "text.primary",
+  border: "1px solid transparent",
   "&:hover": {
     color: "red",
     borderBottom: "1px solid red",
@@ -56,6 +57,11 @@ function Navbar() {
           <Link href="/leaderboard">
             <Typography variant="h5" sx={link}>
               leaderboard
+            </Typography>
+          </Link>
+          <Link href="/tutorial">
+            <Typography variant="h5" sx={link}>
+              tutorial
             </Typography>
           </Link>
         </Stack>
