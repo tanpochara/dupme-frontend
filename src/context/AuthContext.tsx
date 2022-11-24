@@ -38,7 +38,7 @@ export const AuthContextProvider = ({
   return (
     <>
       <AuthContext.Provider value={false}>
-        {isAuthen || router.pathname == "/" ? (
+        {isAuthen || router.pathname == "/" || router.pathname == "/admin" ? (
           children
         ) : (
           <>
