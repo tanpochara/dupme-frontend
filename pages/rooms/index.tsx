@@ -136,15 +136,18 @@ const RoomsPage: NextPage = () => {
                     handleOpen();
                   }}
                 >
-                  <Typography> {room.name} </Typography>
-                  <Typography> {room.bet} </Typography>
-                  <Typography> {room.mode} </Typography>
-                  <Typography> {`people: ${room.players.length}`} </Typography>
+                  <Typography color="text.secondary"> {room.name} </Typography>
+                  <Typography color="text.secondary"> {room.bet} </Typography>
+                  <Typography color="text.secondary"> {room.mode} </Typography>
+                  <Typography color="text.secondary">
+                    {" "}
+                    {`people: ${room.players.length}`}{" "}
+                  </Typography>
                 </RoomBox>
               </Grid>
             );
           })}
-        <Grid item xs={3}>
+        <Grid item xs={3} color="text.secondary">
           {" "}
           <RoomBox onClick={() => setIsCreating(true)}>
             {" "}

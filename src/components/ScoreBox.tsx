@@ -15,7 +15,12 @@ const ScoreBoxStyle = {
 
 export const ScoreBox: React.FC<Props> = ({ place, name, points }) => {
   return (
-    <Box style={ScoreBoxStyle} paddingY="20px" paddingX="20px">
+    <Box
+      style={ScoreBoxStyle}
+      paddingY="20px"
+      paddingX="20px"
+      color="text.primary"
+    >
       <Stack direction="row" justifyContent="space-between">
         <Stack direction="row" spacing={2}>
           <Typography variant="h2"> {place}. </Typography>

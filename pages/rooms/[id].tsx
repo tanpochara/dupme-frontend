@@ -165,8 +165,11 @@ const RoomGame = () => {
                         alt={player.name}
                       />
                       <Box>
-                        <Typography> {player.name}</Typography>
-                        <Typography>
+                        <Typography color="text.primary">
+                          {" "}
+                          {player.name}
+                        </Typography>
+                        <Typography color="text.primary">
                           {" "}
                           {`status : ${player.isReady ? "ready" : "not ready"}`}
                         </Typography>

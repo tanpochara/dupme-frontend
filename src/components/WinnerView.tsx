@@ -86,7 +86,7 @@ export const WinnerView: React.FC<Props> = ({ roomData }) => {
     );
 
   return (
-    <Container>
+    <Container color="text.primary">
       <Box
         textAlign="right"
         onClick={handleLeaveRoom}

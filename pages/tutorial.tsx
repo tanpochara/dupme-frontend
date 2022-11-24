@@ -5,8 +5,11 @@ const Tutorial: NextPage = () => {
   return (
     <Container>
       <Box>
-        <Typography variant="h2"> What is dupme </Typography>
-        <Typography variant="h4">
+        <Typography color="text.primary" variant="h2">
+          {" "}
+          What is dupme{" "}
+        </Typography>
+        <Typography color="text.primary" variant="h4">
           {" "}
           dupme is a multiplayer game that each user will have a turn to make
           sequence of piano sound and let the other player copy that sequence,
@@ -15,8 +18,11 @@ const Tutorial: NextPage = () => {
           user agree and bet on certain amount of money through the blockchain
         </Typography>
       </Box>
-      <Box mt="30px">
-        <Typography variant="h2"> How to play the game </Typography>
+      <Box mt="30px" color="text.primary">
+        <Typography color="text.primary" variant="h2">
+          {" "}
+          How to play the game{" "}
+        </Typography>
         <div style={{ fontSize: "20px" }}>
           <ol>
             <li>
