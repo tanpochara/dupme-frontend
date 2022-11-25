@@ -110,6 +110,7 @@ const RoomGame = () => {
         if (params.round == 1) {
           handleOpen();
         }
+        setRecordSequence([]);
         const time = new Date();
         time.setSeconds(time.getSeconds() + params.time);
         setTime(time);
